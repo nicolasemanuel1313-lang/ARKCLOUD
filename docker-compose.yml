@@ -1,0 +1,23 @@
+services:
+  arckcloud:
+    build: .
+    container_name: arckcloud
+    restart: unless-stopped
+
+    # Carrega todas as variáveis do .env automaticamente
+    env_file:
+      - .env
+
+    environment:
+      - PYTHONUNBUFFERED=1
+
+    # Persiste arquivos gerados localmente
+    volumes:
+      - ./data:/app/data
+
+    # Logs com rotação automática
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
