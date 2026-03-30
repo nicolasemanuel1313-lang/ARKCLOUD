@@ -27,8 +27,6 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                time.sleep(10)
                 raise
 
             # ======================
@@ -44,13 +42,11 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                
+    
                 # debug e print
                 page.wait_for_load_state("networkidle")
                 page.screenshot(path=f"/app/data/screenshot_{nomeCentro}.png")
-                
-                time.sleep(10)
+
                 raise
 
             # ======================
@@ -74,8 +70,6 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Frame localizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOCALIZAR FRAME: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                time.sleep(10)
                 raise
 
             # ======================
@@ -87,8 +81,6 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                time.sleep(10)
                 raise
 
             # ======================
@@ -99,8 +91,6 @@ def extrair_base_loger(nomeCentro):
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
             except Exception as e:
                 print(f"❌ Erro aguardando loader sumir após consulta: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                time.sleep(10)
                 raise
 
             try:
@@ -150,8 +140,6 @@ def extrair_base_loger(nomeCentro):
 
             except Exception as e:
                 print(f"❌ Erro na etapa de CAPTURAR DADOS DA TABELA: {e}")
-                print("⏳ Aguardando 190s para timeout do Automate...")
-                time.sleep(10)
                 raise
 
     except Exception as e:
