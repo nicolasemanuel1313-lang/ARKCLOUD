@@ -3,7 +3,7 @@ import json
 import os
 
 from apps.app_loger.extrair_loger import extrair_base_loger
-#from apps.app_loger.enviar_automate import enviar_para_automate
+from apps.app_loger.enviar_automate import enviar_para_automate
 from apps.app_loger.enviar_supabase import enviar_para_supabase
 
 
@@ -28,7 +28,8 @@ def loger():
 
     if dfs:
         df_final = pd.concat(dfs, ignore_index=True)
-        enviar_para_supabase(df_final)
+        #enviar_para_supabase(df_final)
+        enviar_para_automate(df_final)
     else:
         print("\n⚠️ Nenhum dado capturado em nenhum centro!")
 
