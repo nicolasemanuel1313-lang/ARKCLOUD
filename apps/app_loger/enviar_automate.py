@@ -12,11 +12,9 @@ def enviar_para_automate(df):
     #df_filtrado = df[df["Tipo Mercado"].isin(tipos_validos)]
 
     if df.empty:
-        print("⚠️ Nenhum registro após filtro de Tipo Mercado.")
+        print("⚠️ Nenhum registro.")
         return
-
-    print(f"✅ Filtro aplicado: {len(df)} registros válidos.")
-
+    
     payload = {
         "total": len(df),
         "dados": df.to_dict(orient="records")
