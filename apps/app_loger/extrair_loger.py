@@ -25,6 +25,7 @@ def extrair_base_loger(nomeCentro):
                 page.get_by_role("textbox", name="Senha").fill(password)
                 page.get_by_role("button", name="Entrar").click()
                 print(f"✅ Login realizado com sucesso.")
+                time.sleep(5)
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
                 raise
@@ -36,9 +37,11 @@ def extrair_base_loger(nomeCentro):
                 page.get_by_role("textbox", name="Buscar por centro").fill(nomeCentro)
                 page.get_by_role("button", name=" Pesquisar").click()
                 page.get_by_role("gridcell", name=nomeCentro).first.dblclick()
+                time.sleep(5)
                 page.get_by_role("button", name="Agendamento De Carga").click()
                 page.get_by_role("textbox", name="Acesso rápido").fill('29')
                 page.get_by_role("button", name="search").click()
+                time.sleep(30)
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
@@ -46,7 +49,6 @@ def extrair_base_loger(nomeCentro):
                 # debug e print
                 page.wait_for_load_state("networkidle")
                 page.screenshot(path=f"/app/data/screenshot_{nomeCentro}.png")
-
                 raise
 
             # ======================
@@ -78,6 +80,7 @@ def extrair_base_loger(nomeCentro):
             try:
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
                 frame_alvo.evaluate("document.querySelector('#btnConsultar').click()")
+                time.sleep(30)
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
