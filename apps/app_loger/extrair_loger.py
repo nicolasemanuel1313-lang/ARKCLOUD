@@ -45,10 +45,6 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
-    
-                # debug e print
-                page.wait_for_load_state("networkidle")
-                page.screenshot(path=f"/app/data/screenshot_{nomeCentro}.png")
                 raise
 
             # ======================
