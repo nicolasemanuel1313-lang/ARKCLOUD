@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env.evolution
+      - .env
     volumes:
       - evolution_instances:/evolution/instances
       - evolution_store:/evolution/store
