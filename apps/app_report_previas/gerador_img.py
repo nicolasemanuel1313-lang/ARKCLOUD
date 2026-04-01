@@ -19,7 +19,7 @@ def gerar_img():
 
     try:
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True)
+            browser = pw.chromium.launch(headless=False)
             context = browser.new_context()
             page = context.new_page()
 
@@ -28,8 +28,10 @@ def gerar_img():
             # ======================
             try:
                 page.goto(url_powerbi)
-                page.get_by_role("button", name="ACEITO").click()
-                page.get_by_role("textbox", name="Usuário").fill(user)
+                #page.get_by_role("button", name="ACEITO").click()
+                page.get_by_role("textbox", name="Enter email").fill(user)
+                page.get_by_role("button", name="Enviar").click()
+                
                 page.get_by_role("textbox", name="Senha").fill(password)
                 page.get_by_role("button", name="Entrar").click()
                 print(f"✅ Login realizado com sucesso.")
@@ -37,12 +39,16 @@ def gerar_img():
                 print(f"❌ Erro na etapa de LOGIN: {e}")
                 raise
 
+            page.get_by_role("button", name="Não").click()
+            time.sleep(20)
+
             # ======================
             # Gerar Img
             # ======================
             
-            folder_path = os.path.join(os.getcwd(), 'data')
-            foto_path = os.path.join(folder_path, 'relatorio_previaHxh.png')
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            folder_path = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "data")
+            foto_path = os.path.join(folder_path, "relatorio_previaHxh.png")
             try:
                 page.screenshot(path=foto_path, full_page=True)
                 print(f"Foto salva em: {foto_path}")
