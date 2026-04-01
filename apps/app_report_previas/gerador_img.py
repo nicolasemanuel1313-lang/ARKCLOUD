@@ -32,7 +32,7 @@ def gerar_img():
                 page.get_by_role("textbox", name="Enter email").fill(user)
                 page.get_by_role("button", name="Submit").click()
                 page.get_by_role("textbox", name="Password").fill(password)
-                page.get_by_role("button", name="Enter").click()
+                page.get_by_role("button", name="Sign in").click()
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
