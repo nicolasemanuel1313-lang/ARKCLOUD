@@ -19,7 +19,7 @@ def gerar_img():
 
     try:
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=False)
+            browser = pw.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
 
