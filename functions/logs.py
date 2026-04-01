@@ -1,8 +1,9 @@
 import traceback
 from datetime import datetime, timezone
-from functions.supabase_client import supabase
+from functions.supabase_client import get_supabase
 
 def log_execution(app_name, status, message=None, tb=None, started_at=None, finished_at=None):
+    supabase = get_supabase()
     duration_ms = None
     if started_at and finished_at:
         duration_ms = int((finished_at - started_at).total_seconds() * 1000)
