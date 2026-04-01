@@ -30,10 +30,9 @@ def gerar_img():
                 page.goto(url_powerbi)
                 #page.get_by_role("button", name="ACEITO").click()
                 page.get_by_role("textbox", name="Enter email").fill(user)
-                page.get_by_role("button", name="Enviar").click()
-                
-                page.get_by_role("textbox", name="Senha").fill(password)
-                page.get_by_role("button", name="Entrar").click()
+                page.get_by_role("button", name="Submit").click()
+                page.get_by_role("textbox", name="Password").fill(password)
+                page.get_by_role("button", name="Enter").click()
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
