@@ -8,9 +8,6 @@ def enviar_para_automate(df):
         print("⚠️ DataFrame vazio, nada a enviar.")
         return
 
-    #tipos_validos = ["Interno", "Interno/Transferência"]
-    #df_filtrado = df[df["Tipo Mercado"].isin(tipos_validos)]
-
     if df.empty:
         print("⚠️ Nenhum registro.")
         return

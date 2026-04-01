@@ -28,21 +28,38 @@ def loger():
                 df['Nome Centro'] = nome
                 dfs.append(df)
                 print(f"✅ {cod} - {nome}: {len(df)} registros capturados!")
+                # ======================
                 # Grava Log
-                log_execution("app_loger", "ok", "Executado com sucesso", started_at=started_at, finished_at=datetime.now(timezone.utc))
+                # ======================
+                log_execution(f"app_loger_{nome}", "ok", "Executado com sucesso", started_at=started_at, finished_at=datetime.now(timezone.utc))
         except Exception as e:
             print(f"❌ Erro no centro {cod} - {nome}: {e}")
+            # ======================
             # Grava Log
-            log_execution("app_loger", "error", str(e), tb=traceback.format_exc(), started_at=started_at, finished_at=datetime.now(timezone.utc))
+            # ======================
+            log_execution(f"app_loger_{nome}", "error", str(e), tb=traceback.format_exc(), started_at=started_at, finished_at=datetime.now(timezone.utc))
     
     # ======================
     # Envia resultado para power automate.
     # ======================
-    if dfs:
-        df_final = pd.concat(dfs, ignore_index=True)
-        enviar_para_automate(df_final)
-    else:
-        print("\n⚠️ Nenhum dado capturado em nenhum centro!")
+    try:
+        started_at = datetime.now(timezone.utc)
+        if dfs:
+            df_final = pd.concat(dfs, ignore_index=True)
+            enviar_para_automate(df_final)
+            # ======================
+            # Grava Log
+            # ======================
+            log_execution("app_loger_automate", "ok", "Executado com sucesso", started_at=started_at, finished_at=datetime.now(timezone.utc))
+        else:
+            print("\n⚠️ Nenhum dado capturado em nenhum centro!")
+            log_execution("app_loger_automate", "ok", "Executado com sucesso/Df Vazio", started_at=started_at, finished_at=datetime.now(timezone.utc))
+        
+    except Exception as e:
+        # ======================
+        # Grava Log
+        # ======================
+        log_execution("app_loger_automate", "error", str(e), tb=traceback.format_exc(), started_at=started_at, finished_at=datetime.now(timezone.utc))
 
 if __name__ == '__main__':
     loger()
