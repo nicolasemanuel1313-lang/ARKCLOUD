@@ -37,6 +37,11 @@ def gerar_img():
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
+                # Debug
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+                folder_path = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "data")
+                foto_path = os.path.join(folder_path, "debug_app.png")
+                page.screenshot(path=foto_path, full_page=True)
                 raise
 
             page.get_by_role("button", name="Não").click()
@@ -54,12 +59,18 @@ def gerar_img():
                 print(f"Foto salva em: {foto_path}")
             except Exception as e:
                 print(f"❌ Erro na etapa de printar Relatorio: {e}")
+                # Debug
+                foto_path = os.path.join(folder_path, "debug_app.png")
+                page.screenshot(path=foto_path, full_page=True)
                 raise
 
             browser.close()
     
     except Exception as e:
                 print(f"❌ Erro ao configurar Playwright: {e}")
+                #Debug
+                foto_path = os.path.join(folder_path, "debug_app.png")
+                page.screenshot(path=foto_path, full_page=True)
                 raise
 
 
