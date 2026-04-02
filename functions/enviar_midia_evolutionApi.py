@@ -25,7 +25,7 @@ def enviar_midia_whatsapp(numero: str, png_path: str, caption: str = "Segue Repo
     }
 
     headers = {
-        "apikey": EVOLUTION_KEY_INSTANCE,
+        "apikey": EVOLUTION_APIKEY,
         "Content-Type": "application/json"
     }
 
