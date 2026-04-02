@@ -17,7 +17,7 @@ def registrar_jobs(scheduler):
         report,
         trigger="cron",
         hour="7-23",       
-        minute="10",        
+        minute="10,30,50",        
         id="app_report_previas",
         name="Report Prévias - 1x por hora",
         replace_existing=True
