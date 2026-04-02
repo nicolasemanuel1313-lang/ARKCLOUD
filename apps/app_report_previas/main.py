@@ -36,6 +36,5 @@ def report():
         # ======================
         log_execution("app_report_previas", "error", str(e), tb=traceback.format_exc(), started_at=started_at, finished_at=datetime.now(timezone.utc))
 
-
 if __name__ == "__main__":
     report()
