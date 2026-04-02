@@ -27,6 +27,7 @@ def gerar_img():
             # Acessar
             # ======================
             try:
+                print(f"🔄 Processando - App Report Previas.")
                 page.goto(url_powerbi)
                 #page.get_by_role("button", name="ACEITO").click()
                 page.get_by_role("textbox", name="Enter email").fill(user)
