@@ -7,10 +7,6 @@ def enviar_para_automate(df):
     if df.empty:
         print("⚠️ DataFrame vazio, nada a enviar.")
         return
-
-    if df.empty:
-        print("⚠️ Nenhum registro.")
-        return
     
     payload = {
         "total": len(df),

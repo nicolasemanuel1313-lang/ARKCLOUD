@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import traceback
 
 from apps.app_report_previas.gerador_img import gerar_img
-from functions.enviar_midia_evolutionApi import enviar_midia_whatsapp
+from functions.enviar_midia_wpp import enviar_midia_whatsapp
 from functions.logs import log_execution
 
 # funciona local e no Docker
