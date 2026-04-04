@@ -7,7 +7,7 @@ from datetime import datetime
 from apps.app_loger.extrair_loger import extrair_base_loger
 from apps.app_loger.enviar_automate import enviar_para_automate
 from decorators.timer import timer
-from functions.enviar_midia_wpp import enviar_midia_whatsapp, enviar_texto_whatsapp
+from functions.enviar_midia_wpp import enviar_midia_whatsapp
 
 centros = json.loads(os.environ["LOGER_CENTROS"])
 
