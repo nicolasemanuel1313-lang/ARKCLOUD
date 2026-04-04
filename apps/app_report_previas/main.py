@@ -10,6 +10,7 @@ from functions.logs import log_execution
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "data")
 PNG_PATH = os.path.join(DATA_DIR, "relatorio_previaHxh.png")
+PNG_DEBUG = os.path.join(DATA_DIR,"debug_app_report_previas.png")
 
 def report():
     agora = datetime.now()
@@ -25,16 +26,16 @@ def report():
             png_path=PNG_PATH,
             caption=f"Olá segue Report - {hora_minuto}"
         )
-        # ======================
-        # Grava Log
-        # ======================
-        log_execution("app_report_previas", "ok", "Executado com sucesso", started_at=started_at, finished_at=datetime.now(timezone.utc))
+
     except Exception as e:
         print(f"Erro no report: {e}")
         # ======================
-        # Grava Log
+        # Envia mensagem com Log
         # ======================
-        log_execution("app_report_previas", "error", str(e), tb=traceback.format_exc(), started_at=started_at, finished_at=datetime.now(timezone.utc))
-
+        enviar_midia_whatsapp(
+            numero=os.environ["ALERT_PHONE"],
+            png_path=PNG_DEBUG,
+            caption = f"Error App Report Previas - {hora_minuto} \n {e}"
+        )
 if __name__ == "__main__":
     report()

@@ -40,7 +40,7 @@ def gerar_img():
                 # Debug
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
                 folder_path = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "data")
-                foto_path = os.path.join(folder_path, "debug_app.png")
+                foto_path = os.path.join(folder_path, "debug_app_report_previas.png")
                 page.screenshot(path=foto_path, full_page=True)
                 raise
 
@@ -60,7 +60,7 @@ def gerar_img():
             except Exception as e:
                 print(f"❌ Erro na etapa de printar Relatorio: {e}")
                 # Debug
-                foto_path = os.path.join(folder_path, "debug_app.png")
+                foto_path = os.path.join(folder_path, "debug_app_report_previas.png")
                 page.screenshot(path=foto_path, full_page=True)
                 raise
 

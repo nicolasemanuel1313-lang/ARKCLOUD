@@ -4,10 +4,18 @@ import time
 import os
 
 
-def extrair_base_loger(nomeCentro):
+def extrair_base_loger(nomeCentro, debug_path=None):
     url = os.environ["URL_LOGER"]
     user = os.environ["LOGER_USER"]
     password = os.environ["LOGER_PASSWORD"]
+
+    def screenshot_erro(page, etapa):
+        if debug_path:
+            try:
+                page.screenshot(path=debug_path, full_page=True)
+                print(f"📸 Screenshot de debug salvo: {debug_path}")
+            except Exception as se:
+                print(f"⚠️ Falha ao salvar screenshot: {se}")
 
     try:
         with sync_playwright() as pw:
@@ -28,6 +36,7 @@ def extrair_base_loger(nomeCentro):
                 time.sleep(5)
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
+                screenshot_erro(page, "LOGIN")
                 raise
 
             # ======================
@@ -45,6 +54,7 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
+                screenshot_erro(page, "SELECAO_CENTRO")
                 raise
 
             # ======================
@@ -68,6 +78,7 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Frame localizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOCALIZAR FRAME: {e}")
+                screenshot_erro(page, "LOCALIZAR_FRAME")
                 raise
 
             # ======================
@@ -80,6 +91,7 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
+                screenshot_erro(page, "CLICAR_CONSULTAR")
                 raise
 
             # ======================
@@ -90,6 +102,7 @@ def extrair_base_loger(nomeCentro):
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
             except Exception as e:
                 print(f"❌ Erro aguardando loader sumir após consulta: {e}")
+                screenshot_erro(page, "LOADER")
                 raise
 
             try:
@@ -139,6 +152,7 @@ def extrair_base_loger(nomeCentro):
 
             except Exception as e:
                 print(f"❌ Erro na etapa de CAPTURAR DADOS DA TABELA: {e}")
+                screenshot_erro(page, "CAPTURAR_DADOS")
                 raise
 
     except Exception as e:
