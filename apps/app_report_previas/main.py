@@ -13,6 +13,7 @@ PNG_PATH = os.path.join(DATA_DIR, "relatorio_previaHxh.png")
 PNG_DEBUG = os.path.join(DATA_DIR,"debug_app_report_previas.png")
 
 def report():
+    print("==Iniciando App Report Previas==")
     agora = datetime.now()
     hora_minuto = agora.strftime("%H:%M")
     started_at = datetime.now(timezone.utc)

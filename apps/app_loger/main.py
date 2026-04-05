@@ -23,6 +23,7 @@ def enviar(df):
     enviar_para_automate(df)
 
 def loger():
+    print("==Iniciando App Loger==")
     agora = datetime.now()
     hora_minuto = agora.strftime("%d/%m %H:%M")
     dfs = []
