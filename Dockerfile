@@ -26,9 +26,6 @@ RUN playwright install chromium --with-deps
 # Copia o restante do projeto
 COPY . .
 
-# DEBUG temporário - remove depois
-RUN ls -la /app
-
 # Variáveis de ambiente
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app

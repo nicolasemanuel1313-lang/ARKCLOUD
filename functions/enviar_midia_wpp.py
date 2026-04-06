@@ -5,7 +5,6 @@ import os
 EVOLUTION_URL = os.environ["EVOLUTION_URL"]
 EVOLUTION_APIKEY = os.environ["AUTHENTICATION_API_KEY"]
 EVOLUTION_INSTANCE = os.environ["EVOLUTION_INSTANCE"]
-EVOLUTION_KEY_INSTANCE = os.environ["EVOLUTION_KEY_INSTANCE"] 
 
 def enviar_midia_whatsapp(numero: str, png_path: str, caption: str = "Segue Report"):
     with open(png_path, "rb") as image_file:
