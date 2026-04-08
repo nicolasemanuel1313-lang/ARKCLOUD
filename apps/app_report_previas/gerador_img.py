@@ -23,22 +23,26 @@ def gerar_img():
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True)
-        page    = browser.new_context().new_page()
+        context = browser.new_context(
+            locale="pt-BR",
+            extra_http_headers={"Accept-Language": "pt-BR,pt;q=0.9"},
+        )
+        page    = context.new_page()
 
         try:
             print("🔄 Processando - App Report Previas.")
             page.goto(url_powerbi)
             page.get_by_role("textbox", name="Enter email").fill(user)
-            page.get_by_role("button", name="Submit").click()
-            page.get_by_role("textbox", name="Password").fill(password)
-            page.get_by_role("button", name="Sign in").click()
+            page.get_by_role("button", name="Enviar").click()
+            page.get_by_role("textbox", name="Senha").fill(password)
+            page.get_by_role("button", name="Entrar").click()
             print("✅ Login realizado com sucesso.")
         except Exception as e:
             print(f"❌ Erro na etapa de LOGIN: {e}")
             screenshot_debug(page)
             raise
 
-        page.get_by_role("button", name="No").click()
+        page.get_by_role("button", name="Não").click()
         time.sleep(20)
 
         try:
