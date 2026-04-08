@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 import pandas as pd
+import time
 import os
 
 
@@ -31,8 +32,8 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 page.get_by_role("textbox", name="Usuário").fill(user)
                 page.get_by_role("textbox", name="Senha").fill(password)
                 page.get_by_role("button", name="Entrar").click()
-                page.wait_for_load_state("networkidle")
                 print(f"✅ Login realizado com sucesso.")
+                time.sleep(5)
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
                 screenshot_erro(page, "LOGIN")
@@ -45,12 +46,11 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 page.get_by_role("textbox", name="Buscar por centro").fill(nomeCentro)
                 page.get_by_role("button", name=" Pesquisar").click()
                 page.get_by_role("gridcell", name=nomeCentro).first.dblclick()
-                # Aguarda o botão aparecer antes de clicar (substitui sleep(5))
-                agendamento_btn = page.get_by_role("button", name="Agendamento De Carga")
-                agendamento_btn.wait_for(state="visible", timeout=15000)
-                agendamento_btn.click()
+                time.sleep(5)
+                page.get_by_role("button", name="Agendamento De Carga").click()
                 page.get_by_role("textbox", name="Acesso rápido").fill('29')
                 page.get_by_role("button", name="search").click()
+                time.sleep(30)
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
@@ -62,11 +62,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # ======================
             try:
                 frame_alvo = None
-                timeout_ms = 30000
-                interval_ms = 500
-                elapsed = 0
-
-                while elapsed < timeout_ms:
+                for _ in range(60):
                     for f in page.frames:
                         if "LOGER_WEB/consultaFilaTransporteDisponibilidadeImediata" in f.url and not f.is_detached():
                             if f.locator('#btnConsultar').count() > 0:
@@ -74,8 +70,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                                 break
                     if frame_alvo:
                         break
-                    page.wait_for_timeout(interval_ms)
-                    elapsed += interval_ms
+                    time.sleep(0.5)
 
                 if not frame_alvo:
                     raise Exception("Frame não encontrado após 30 segundos!")
@@ -91,7 +86,8 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # ======================
             try:
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
-                frame_alvo.locator('#btnConsultar').click()
+                frame_alvo.evaluate("document.querySelector('#btnConsultar').click()")
+                time.sleep(30)
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
@@ -103,8 +99,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # ======================
             print("Aguardando resultados...")
             try:
-                # Timeout maior pois substitui o sleep(30) que havia antes
-                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=60000)
+                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
             except Exception as e:
                 print(f"❌ Erro aguardando loader sumir após consulta: {e}")
                 screenshot_erro(page, "LOADER")
