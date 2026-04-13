@@ -87,8 +87,13 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             try:
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
                 frame_alvo.evaluate("document.querySelector('#btnConsultar').click()")
-                frame_alvo.wait_for_selector('.loader-container', state='visible', timeout=10000)
-                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=60000)
+                # loader pode não aparecer se a consulta for muito rápida — ignora timeout
+                try:
+                    frame_alvo.wait_for_selector('.loader-container', state='visible', timeout=10000)
+                    frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=60000)
+                except Exception:
+                    pass  # loader não apareceu — consulta já concluiu ou não usa loader
+
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
