@@ -27,13 +27,13 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # LOGIN
             # ======================
             try:
-                page.goto(url)
+                page.goto(url, wait_until="networkidle", timeout=30000)
                 page.get_by_role("button", name="ACEITO").click()
                 page.get_by_role("textbox", name="Usuário").fill(user)
                 page.get_by_role("textbox", name="Senha").fill(password)
                 page.get_by_role("button", name="Entrar").click()
+                page.wait_for_load_state("networkidle", timeout=30000)
                 print(f"✅ Login realizado com sucesso.")
-                time.sleep(5)
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
                 screenshot_erro(page, "LOGIN")
@@ -46,11 +46,11 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 page.get_by_role("textbox", name="Buscar por centro").fill(nomeCentro)
                 page.get_by_role("button", name=" Pesquisar").click()
                 page.get_by_role("gridcell", name=nomeCentro).first.dblclick()
-                time.sleep(5)
+                page.wait_for_load_state("networkidle", timeout=30000)
                 page.get_by_role("button", name="Agendamento De Carga").click()
                 page.get_by_role("textbox", name="Acesso rápido").fill('29')
                 page.get_by_role("button", name="search").click()
-                time.sleep(30)
+                page.wait_for_load_state("networkidle", timeout=60000)
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
@@ -87,7 +87,8 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             try:
                 frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
                 frame_alvo.evaluate("document.querySelector('#btnConsultar').click()")
-                time.sleep(30)
+                frame_alvo.wait_for_selector('.loader-container', state='visible', timeout=10000)
+                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=60000)
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
@@ -98,13 +99,6 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # CAPTURAR TRANSPORTES
             # ======================
             print("Aguardando resultados...")
-            try:
-                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
-            except Exception as e:
-                print(f"❌ Erro aguardando loader sumir após consulta: {e}")
-                screenshot_erro(page, "LOADER")
-                raise
-
             try:
                 frame_alvo.wait_for_selector(
                     '#filaTransporteDisponibilidadeImediataGrid tr.jqgrow',
