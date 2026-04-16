@@ -43,7 +43,7 @@ def gerar_img():
             raise
 
         page.get_by_role("button", name="Não").click()
-        time.sleep(40)
+        time.sleep(20)
 
         try:
             page.screenshot(path=FOTO_PATH, full_page=True)

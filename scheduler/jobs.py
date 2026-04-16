@@ -44,7 +44,7 @@ def registrar_jobs(scheduler):
             "func":        report,
             "timeout_seg": 300,   # 5 min — executa 1x por hora
             "trigger":     "cron",
-            "kwargs":      {"hour": "7-23", "minute": "10"},
+            "kwargs":      {"hour": "7-20", "minute": "10"},
             "id":          "app_report_previas",
             "name":        "Report Prévias - 1x por hora",
         },
