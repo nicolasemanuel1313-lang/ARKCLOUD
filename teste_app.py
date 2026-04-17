@@ -1,32 +1,16 @@
-import os
-from datetime import datetime
-from dotenv import load_dotenv
-from supabase import create_client
+import socket
 
-# carregar .env
-load_dotenv()
+def get_local_ip():
+    # Cria um socket temporário para identificar a interface de rede ativa
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # Não precisa estar conectado de verdade, o 8.8.8.8 é o DNS do Google
+        s.connect(("8.8.8.8", 80))
+        ip_local = s.getsockname()[0]
+    except Exception:
+        ip_local = "Não foi possível detectar"
+    finally:
+        s.close()
+    return ip_local
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-print("URL:", SUPABASE_URL)
-print("KEY (inicio):", SUPABASE_KEY[:20] if SUPABASE_KEY else None)
-
-try:
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-    response = supabase.table("LOGS").insert({
-        "app_name": "teste_local",
-        "status": "ok",
-        "message": "teste direto da máquina",
-        "started_at": datetime.now().isoformat(),
-        "finished_at": datetime.now().isoformat(),
-        "duration_ms": 0
-    }).execute()
-
-    print("✅ Inserido com sucesso!")
-    print(response)
-
-except Exception as e:
-    print("❌ Erro:")
-    print(e)
+print(f"Seu IP Local é: {get_local_ip()}")
