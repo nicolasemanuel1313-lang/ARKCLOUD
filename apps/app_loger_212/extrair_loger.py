@@ -174,8 +174,6 @@ def extrair_base_loger(nomeCentro):
                 df = df.drop(columns=[c for c in colunas_remover if c in df.columns])
 
                 print(f"✅ {len(df)} registros extraídos do centro {nomeCentro}.")
-                print(df.head())
-
                 return df
 
             except Exception as e:
