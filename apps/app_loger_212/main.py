@@ -4,16 +4,16 @@ import os
 import traceback
 from datetime import datetime
 
-from apps.app_loger.extrair_loger import extrair_base_loger
+from apps.app_loger_212.extrair_loger import extrair_base_loger
 from decorators.timer import timer
 from functions.enviar_midia_wpp import enviar_midia_whatsapp
 from functions.enviar_automate import enviar_para_automate
 
-centros = json.loads(os.environ["LOGER_CENTROS_29"])
+centros = json.loads(os.environ["LOGER_CENTROS_212"])
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "data")
-AUTOMATE_URL = os.environ["LOGER_29_AUTOMATE_URL"]
+AUTOMATE_URL = os.environ["LOGER_212_AUTOMATE_URL"]
 
 @timer
 def extrair(cod, debug_path):
@@ -23,8 +23,8 @@ def extrair(cod, debug_path):
 def enviar(df,url):
     enviar_para_automate(df,url)
 
-def loger():
-    print("==Iniciando App Loger 29==")
+def loger_212():
+    print("==Iniciando App Loger 212==")
     agora = datetime.now()
     hora_minuto = agora.strftime("%d/%m %H:%M")
     dfs = []
@@ -48,7 +48,7 @@ def loger():
                         numero=os.environ["ALERT_PHONE"],
                         png_path=debug_path,
                         caption=
-                        f"🚨 *App Loger 29 — Erro*\n"
+                        f"🚨 *App Loger 212 — Erro*\n"
                         f"📸 Debug — {cod} {nome} — {hora_minuto} \n"
                         f"❌ {str(e)}"
                     )
@@ -69,4 +69,4 @@ def loger():
         print("⚠️ Nenhum dado capturado em nenhum centro.")
 
 if __name__ == '__main__':
-    loger()
+    loger_212()

@@ -3,19 +3,13 @@ import pandas as pd
 import time
 import os
 
+from functions.screenshot_error import screenshot_erro
+
 
 def extrair_base_loger(nomeCentro, debug_path=None):
     url = os.environ["URL_LOGER"]
     user = os.environ["LOGER_USER"]
     password = os.environ["LOGER_PASSWORD"]
-
-    def screenshot_erro(page, etapa):
-        if debug_path:
-            try:
-                page.screenshot(path=debug_path, full_page=True)
-                print(f"📸 Screenshot de debug salvo: {debug_path}")
-            except Exception as se:
-                print(f"⚠️ Falha ao salvar screenshot: {se}")
 
     try:
         with sync_playwright() as pw:
@@ -27,12 +21,13 @@ def extrair_base_loger(nomeCentro, debug_path=None):
             # LOGIN
             # ======================
             try:
-                page.goto(url, wait_until="networkidle", timeout=30000)
+                page.goto(url)
                 page.get_by_role("button", name="ACEITO").click()
                 page.get_by_role("textbox", name="Usuário").fill(user)
                 page.get_by_role("textbox", name="Senha").fill(password)
                 page.get_by_role("button", name="Entrar").click()
-                page.wait_for_load_state("networkidle", timeout=30000)
+                # Aguarda a tela de seleção de centro carregar
+                page.get_by_role("textbox", name="Buscar por centro").wait_for(timeout=30000)
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
@@ -46,105 +41,90 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 page.get_by_role("textbox", name="Buscar por centro").fill(nomeCentro)
                 page.get_by_role("button", name=" Pesquisar").click()
                 page.get_by_role("gridcell", name=nomeCentro).first.dblclick()
-                page.wait_for_load_state("networkidle", timeout=30000)
+                # Aguarda o botão de Agendamento aparecer após selecionar o centro
+                page.get_by_role("button", name="Agendamento De Carga").wait_for(timeout=30000)
                 page.get_by_role("button", name="Agendamento De Carga").click()
                 page.get_by_role("textbox", name="Acesso rápido").fill('29')
                 page.get_by_role("button", name="search").click()
-                page.wait_for_load_state("networkidle", timeout=60000)
+                # Aguarda o iframe carregar
+                page.wait_for_selector("iframe", timeout=30000)
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
-                screenshot_erro(page, "SELECAO_CENTRO")
-                raise
-
-            # ======================
-            # LOCALIZAR FRAME CORRETO
-            # ======================
-            try:
-                frame_alvo = None
-                for _ in range(60):
-                    for f in page.frames:
-                        if "LOGER_WEB/consultaFilaTransporteDisponibilidadeImediata" in f.url and not f.is_detached():
-                            if f.locator('#btnConsultar').count() > 0:
-                                frame_alvo = f
-                                break
-                    if frame_alvo:
-                        break
-                    time.sleep(0.5)
-
-                if not frame_alvo:
-                    raise Exception("Frame não encontrado após 30 segundos!")
-
-                print(f"✅ Frame localizado com sucesso.")
-            except Exception as e:
-                print(f"❌ Erro na etapa de LOCALIZAR FRAME: {e}")
-                screenshot_erro(page, "LOCALIZAR_FRAME")
+                screenshot_erro(page, "SELEÇÃO CENTRO")
                 raise
 
             # ======================
             # CLICAR EM CONSULTAR
             # ======================
             try:
-                frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=30000)
-                frame_alvo.evaluate("document.querySelector('#btnConsultar').click()")
-                # loader pode não aparecer se a consulta for muito rápida — ignora timeout
-                try:
-                    frame_alvo.wait_for_selector('.loader-container', state='visible', timeout=10000)
-                    frame_alvo.wait_for_selector('.loader-container', state='hidden', timeout=60000)
-                except Exception:
-                    pass  # loader não apareceu — consulta já concluiu ou não usa loader
+                frame = page.frame_locator("iframe").first
+                frame.locator("#btnConsultar").wait_for(timeout=30000)
 
+                # Clica no Consultar via JavaScript dentro do iframe
+                page.evaluate("""
+                    var iframe = document.querySelector('iframe');
+                    var doc = iframe.contentDocument || iframe.contentWindow.document;
+                    doc.getElementById('btnConsultar').click();
+                """)
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
-                screenshot_erro(page, "CLICAR_CONSULTAR")
+                screenshot_erro(page, "CONSULTAR")
                 raise
 
             # ======================
             # CAPTURAR TRANSPORTES
             # ======================
-            print("Aguardando resultados...")
             try:
-                frame_alvo.wait_for_selector(
-                    '#filaTransporteDisponibilidadeImediataGrid tr.jqgrow',
-                    timeout=15000
-                )
-            except Exception:
-                print(f"⚠️ Centro {nomeCentro}: tabela vazia, nenhum transporte na fila.")
-                browser.close()
-                return pd.DataFrame()
+                # Aguarda as linhas de resultado aparecerem
+                try:
+                    frame.locator('#filaTransporteDisponibilidadeImediataGrid tr.jqgrow').first.wait_for(timeout=15000)
+                except Exception:
+                    print(f"⚠️ Centro {nomeCentro}: tabela vazia, nenhum transporte na fila.")
+                    browser.close()
+                    return pd.DataFrame()
 
-            try:
-                dados = frame_alvo.evaluate("""
-                    () => {
-                        const linhas = document.querySelectorAll('#filaTransporteDisponibilidadeImediataGrid tr.jqgrow');
-                        const resultado = [];
+                # Extrai todos os dados via API do jqGrid
+                dados = page.evaluate("""
+                    (function() {
+                        var iframe = document.querySelector('iframe');
+                        var win = iframe.contentWindow;
 
-                        linhas.forEach(linha => {
-                            const get = (col) => {
-                                const td = linha.querySelector(`td[aria-describedby="filaTransporteDisponibilidadeImediataGrid_${col}"]`);
-                                return td ? td.getAttribute('title') : '';
-                            };
+                        var grid = win.jQuery('#filaTransporteDisponibilidadeImediataGrid');
+                        var ids = grid.jqGrid('getDataIDs');
 
-                            resultado.push({
-                                'Transporte':           get('transporte'),
-                                'Transportadora':       get('transportadora'),
-                                'Placa':                get('placa'),
-                                'Tipo Mercado':         get('tipoMercado'),
-                                'Data Agendamento':     get('dataAgendamento'),
-                                'Data Disponibilidade': get('dataDisponibilidade'),
-                                'Sequencia':            get('sequencia'),
-                                'Liberação Prévia':     get('liberacaoPrevia'),
-                                'Liberação Automática': get('liberacaoAutomatica'),
-                                'Dedicado':             get('dedicado'),
-                            });
+                        var resultado = [];
+                        ids.forEach(function(id) {
+                            resultado.push(grid.jqGrid('getRowData', id));
                         });
 
                         return resultado;
-                    }
+                    })();
                 """)
 
                 df = pd.DataFrame(dados)
+
+                # Renomeia as colunas para português
+                df = df.rename(columns={
+                    'transporte':           'Transporte',
+                    'transportadora':       'Transportadora',
+                    'placa':                'Placa',
+                    'tipoMercado':          'Tipo Mercado',
+                    'dataAgendamento':      'Data Agendamento',
+                    'dataDisponibilidade':  'Data Disponibilidade',
+                    'sequencia':            'Sequencia',
+                    'liberacaoPrevia':      'Liberação Prévia',
+                    'liberacaoAutomatica':  'Liberação Automática',
+                    'dedicado':             'Dedicado',
+                })
+
+                # Dropar colunas adjacentes do jqGrid
+                colunas_remover = [
+                    'id','dataLiberacaoPrevia'
+                ]
+                df = df.drop(columns=[c for c in colunas_remover if c in df.columns])
+
                 print(f"✅ {len(df)} registros capturados!")
                 browser.close()
                 return df

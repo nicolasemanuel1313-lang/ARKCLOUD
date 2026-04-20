@@ -1,9 +1,7 @@
 import requests
 import os
 
-AUTOMATE_URL = os.environ["AUTOMATE_WEBHOOK_URL"]
-
-def enviar_para_automate(df):
+def enviar_para_automate(df,url):
     if df.empty:
         print("⚠️ DataFrame vazio, nada a enviar.")
         return
@@ -14,7 +12,7 @@ def enviar_para_automate(df):
     }
 
     response = requests.post(
-        AUTOMATE_URL,
+        url,
         json=payload,
         headers={"Content-Type": "application/json"}
     )

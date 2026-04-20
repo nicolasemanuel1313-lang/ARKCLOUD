@@ -1,6 +1,7 @@
 import threading
 from apps.app_loger.main import loger
 from apps.app_report_previas.main import report
+from apps.app_loger_212.main import loger_212
 
 
 def com_timeout(func, timeout_seg: int):
@@ -38,7 +39,7 @@ def registrar_jobs(scheduler):
             "trigger":     "cron",
             "kwargs":      {"minute": "0,20,40"},
             "id":          "app_loger",
-            "name":        "App Loger - a cada 20 min",
+            "name":        "App Loger 29 - a cada 20 min",
         },
         {
             "func":        report,
@@ -48,6 +49,14 @@ def registrar_jobs(scheduler):
             "id":          "app_report_previas",
             "name":        "Report Prévias - 1x por hora",
         },
+        {
+            "func":        loger_212,
+            "timeout_seg": 900,   
+            "trigger":     "cron",
+            "kwargs":      {"minute": "5,25,45"},
+            "id":          "app_loger_212",
+            "name":        "App Loger 212 - a cada 20 min",
+        }
     ]
 
     for job in jobs:
