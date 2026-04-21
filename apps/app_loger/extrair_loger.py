@@ -31,7 +31,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
-                screenshot_erro(page, "LOGIN")
+                screenshot_erro(page,debug_path, "LOGIN")
                 raise
 
             # ======================
@@ -51,7 +51,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
-                screenshot_erro(page, "SELEÇÃO CENTRO")
+                screenshot_erro(page,debug_path, "SELEÇÃO CENTRO")
                 raise
 
             # ======================
@@ -70,7 +70,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
                 print(f"✅ Botão Consultar clicado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de CLICAR EM CONSULTAR: {e}")
-                screenshot_erro(page, "CONSULTAR")
+                screenshot_erro(page,debug_path, "CONSULTAR")
                 raise
 
             # ======================
@@ -131,7 +131,7 @@ def extrair_base_loger(nomeCentro, debug_path=None):
 
             except Exception as e:
                 print(f"❌ Erro na etapa de CAPTURAR DADOS DA TABELA: {e}")
-                screenshot_erro(page, "CAPTURAR_DADOS")
+                screenshot_erro(page,debug_path,"CAPTURAR_DADOS")
                 raise
 
     except Exception as e:

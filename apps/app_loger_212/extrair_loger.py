@@ -7,14 +7,14 @@ from datetime import datetime, timedelta
 from functions.screenshot_error import screenshot_erro
 
 
-def extrair_base_loger(nomeCentro):
+def extrair_base_loger(nomeCentro,debug_path=None):
     url = os.environ["URL_LOGER"]
     user = os.environ["LOGER_USER"]
     password = os.environ["LOGER_PASSWORD"]
 
     try:
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=False, channel='chrome')
+            browser = pw.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
 
@@ -32,7 +32,7 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Login realizado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de LOGIN: {e}")
-                screenshot_erro(page, "LOGIN")
+                screenshot_erro(page,debug_path,"LOGIN")
                 raise
 
             # ======================
@@ -52,7 +52,7 @@ def extrair_base_loger(nomeCentro):
                 print(f"✅ Centro {nomeCentro} selecionado com sucesso.")
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DO CENTRO {nomeCentro}: {e}")
-                screenshot_erro(page, "SELEÇÃO_CENTRO")
+                screenshot_erro(page,debug_path,"SELEÇÃO_CENTRO")
                 raise
 
             # ======================
@@ -178,7 +178,7 @@ def extrair_base_loger(nomeCentro):
 
             except Exception as e:
                 print(f"❌ Erro na etapa de SELEÇÃO DAS DATAS E CONSULTAR {nomeCentro}: {e}")
-                screenshot_erro(page, "CAPTURA_DADOS")
+                screenshot_erro(page,debug_path,"CAPTURA_DADOS")
                 raise
 
     except Exception as e:
