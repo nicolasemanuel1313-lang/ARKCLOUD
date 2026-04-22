@@ -13,12 +13,14 @@ def enviar_midia_whatsapp(numero: str, png_path: str, caption: str = "Segue Repo
     file_name = os.path.basename(png_path)
 
     payload = {
-    "number": numero,
-    "mediatype": "image",
-    "mimetype": "image/png",
-    "caption": caption,
-    "media": media_base64,
-    "fileName": file_name
+        "number": numero,
+        "mediaMessage": {
+            "mediatype": "image",
+            "mimetype": "image/png",
+            "caption": caption,
+            "media": media_base64,
+            "fileName": file_name
+        }
     }
 
     headers = {
