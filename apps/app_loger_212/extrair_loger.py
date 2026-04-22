@@ -59,9 +59,6 @@ def extrair_base_loger(nomeCentro,debug_path=None):
             # SELEÇÃO DAS DATAS E CONSULTAR
             # ======================
             try:
-                
-
-                # Calcula as datas dinamicamente
                 hoje = datetime.today()
                 data_de = (hoje - timedelta(days=20)).strftime('%d/%m/%Y')
                 data_ate = (hoje + timedelta(days=10)).strftime('%d/%m/%Y')
@@ -101,6 +98,9 @@ def extrair_base_loger(nomeCentro,debug_path=None):
 
                 # Aguarda a tabela de resultados carregar com dados
                 frame.locator("#monitoramentoAtendimentoAgendamentoCargaGrid tr.jqgrow").first.wait_for(timeout=60000)
+
+                # Aguarda o loader sumir indicando processamento completo
+                frame.locator('.loader-container').wait_for(state='hidden', timeout=60000)
                 print(f"✅ Datas preenchidas ({data_de} até {data_ate}) e consulta iniciada.")
 
                 # ======================
@@ -164,12 +164,12 @@ def extrair_base_loger(nomeCentro,debug_path=None):
                     'pesoreal':                  'Peso Real',
                     'dedicado':                  'Dedicado',
                 })
-                
+
                 # Dropar colunas adjacentes do jqGrid
                 colunas_remover = [
                     'minutocarregamento', 'minutocarregamentoprevisto', 'minutoprevisto',
                     'minutoreal', 'minutocalcpermanencia', 'minutodisponibilidade',
-                                'minutoAmarracao', 'valorpesoprogramado', 'valorpesoreal', 'Nome Centro'
+                    'minutoAmarracao', 'valorpesoprogramado', 'valorpesoreal', 'Nome Centro'
                 ]
                 df = df.drop(columns=[c for c in colunas_remover if c in df.columns])
 
